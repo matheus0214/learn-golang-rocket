@@ -17,7 +17,17 @@ var moviesInDB = []string{
 }
 
 func main() {
-	boundsCheck([]int{1, 2, 3, 4})
+	workingWithMap()
+}
+
+func workingWithMap() {
+	m := make(map[string]string)
+	n := map[string]string{"Matheus": "Dias"}
+
+	m["Matheus"] = "Matheus"
+	n["Matheus"] = "Matheus"
+
+	fmt.Println(m == nil)
 }
 
 func boundsCheck(items []int) {
