@@ -1,9 +1,7 @@
 package main
 
-import (
-	apinoexternallib "learnHTTP/apiNoExternalLib"
-)
+import simpleusersapi "learnHTTP/simpleUsersApi"
 
 func main() {
-	apinoexternallib.Serve()
+	simpleusersapi.Serve()
 }
