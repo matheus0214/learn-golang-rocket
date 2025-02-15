@@ -3,20 +3,27 @@ package simpleusersapi
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
 
+type Password string
+
+func (p Password) LogValue() slog.Value {
+	return slog.StringValue("[REDACTED]")
+}
+
 type User struct {
-	Username string `json:"username"`
-	ID       int64  `json:"id,string"`
-	Role     string `json:"role"`
-	Password string `json:"-"`
+	Username string   `json:"username"`
+	ID       int64    `json:"id,string"`
+	Role     string   `json:"role"`
+	Password Password `json:"-"`
 }
 
 type Response struct {
@@ -25,6 +32,16 @@ type Response struct {
 }
 
 func Serve() {
+	options := &slog.HandlerOptions{
+		AddSource:   false,
+		Level:       slog.LevelInfo,
+		ReplaceAttr: nil,
+	}
+	l := slog.New(slog.NewJSONHandler(os.Stdout, options))
+	slog.SetDefault(l)
+
+	slog.Info("Server initialize")
+
 	r := chi.NewMux()
 
 	r.Use(middleware.Recoverer)
@@ -49,14 +66,14 @@ func Serve() {
 func sendJSON(w http.ResponseWriter, r Response, s int) {
 	data, err := json.Marshal(r)
 	if err != nil {
-		fmt.Println("Error to marshal: ", err)
+		slog.Error("Error to marshal: ", "error", err)
 		sendJSON(w, Response{Error: "Internal server error"}, http.StatusInternalServerError)
 		return
 	}
 
 	w.WriteHeader(s)
 	if _, err = w.Write(data); err != nil {
-		fmt.Println("Erro to send response: ", err)
+		slog.Error("Error to send response: ", "error", err)
 		return
 	}
 }
@@ -79,6 +96,7 @@ func handleGetUsers(db map[int64]User) http.HandlerFunc {
 			return
 		}
 
+		slog.Info("User", "user", user)
 		sendJSON(w, Response{Data: user}, http.StatusOK)
 	}
 }
@@ -94,6 +112,7 @@ func handlePostUsers(db map[int64]User) http.HandlerFunc {
 				return
 			}
 
+			slog.Error("Error to load user json", "error", err)
 			sendJSON(w, Response{Error: "Internal server error"}, http.StatusInternalServerError)
 			return
 		}
