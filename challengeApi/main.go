@@ -2,6 +2,7 @@ package main
 
 import (
 	"challengeApi/api"
+	"challengeApi/database"
 	"log/slog"
 )
 
@@ -15,7 +16,9 @@ func main() {
 }
 
 func run() error {
-	if err := api.Serve(); err != nil {
+	db := database.NewDatabase()
+
+	if err := api.Serve(db); err != nil {
 		return err
 	}
 	return nil

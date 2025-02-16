@@ -1,6 +1,7 @@
 package api
 
 import (
+	"challengeApi/database"
 	"log/slog"
 	"net/http"
 	"time"
@@ -32,14 +33,14 @@ func newServer() Server {
 	return Server{r: r, s: s}
 }
 
-func Serve() error {
+func Serve(db database.DB) error {
 	slog.Info("Starting server", "port", 8080)
 
 	server := newServer()
 
 	server.r.Route("/api", func(r chi.Router) {
 		r.Use(jsonMiddleware)
-		UserRoutes(r)
+		UserRoutes(r, db)
 	})
 
 	err := server.s.ListenAndServe()
