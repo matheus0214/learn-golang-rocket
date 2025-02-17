@@ -1,11 +1,9 @@
 package main
 
 import (
-	"workingWithDB/postgres"
-
-	_ "github.com/go-sql-driver/mysql"
+	usingsqlc "workingWithDB/usingSqlc"
 )
 
 func main() {
-	postgres.PostgresSql()
+	usingsqlc.Connect()
 }
