@@ -1,9 +1,9 @@
 package main
 
 import (
-	usingsqlc "workingWithDB/usingSqlc"
+	usingsqlx "workingWithDB/usingSqlx"
 )
 
 func main() {
-	usingsqlc.Connect()
+	usingsqlx.Connect()
 }
