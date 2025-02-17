@@ -1,29 +1,11 @@
 package main
 
 import (
-	"fmt"
+	"workingWithDB/mysql"
 
-	_ "modernc.org/sqlite"
-
-	"zombiezen.com/go/sqlite"
-	"zombiezen.com/go/sqlite/sqlitex"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	conn, err := sqlite.OpenConn(":memory:", sqlite.OpenReadWrite)
-	if err != nil {
-		panic(err)
-	}
-	defer conn.Close()
-
-	err = sqlitex.ExecuteTransient(conn, "SELECT 'hello, world';", &sqlitex.ExecOptions{
-		ResultFunc: func(stmt *sqlite.Stmt) error {
-			fmt.Println(stmt.ColumnText(0))
-			return nil
-		},
-	})
-
-	if err != nil {
-		panic(err)
-	}
+	mysql.MySql()
 }
