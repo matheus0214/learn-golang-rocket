@@ -1,11 +1,11 @@
 package main
 
 import (
-	"workingWithDB/mysql"
+	"workingWithDB/postgres"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
 func main() {
-	mysql.MySql()
+	postgres.PostgresSql()
 }
